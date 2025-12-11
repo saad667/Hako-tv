@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BeIN Sports - بث مباشر</title>
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/video.js/dist/video-js.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/video.js/dist/video.min.js"></script>
+
+<style>
+body {
+    margin:0;
+    font-family:"Tajawal",sans-serif;
+    background:#0d0d0f;
+    color:#fff;
+}
+
+header {
+    text-align:center;
+    padding:16px 10px;
+    background:#101014;
+    position:sticky;
+    top:0;
+    z-index:1000;
+    box-shadow:0 2px 8px rgba(0,0,0,0.5);
+}
+h1{margin:0;font-size:22px;}
+
+#topBar{
+    position:sticky;
+    top:50px;
+    background:#101014;
+    padding:10px;
+    z-index:999;
+    box-shadow:0 2px 6px rgba(0,0,0,0.4);
+    border-radius:8px;
+}
+
+#player{
+    width:100%;
+    max-width:900px;
+    height:300px;
+    border-radius:8px;
+    background:#000;
+}
+
+#favoritesBtn{
+    margin-top:10px;
+    padding:10px;
+    width:160px;
+    background:#6a00ff;
+    border:none;
+    border-radius:8px;
+    color:#fff;
+    font-weight:bold;
+    cursor:pointer;
+    transition:0.2s;
+}
+#favoritesBtn:hover{background:#7b1aff;}
+
+#searchInput{
+    width:100%;
+    padding:10px;
+    border-radius:8px;
+    margin-bottom:10px;
+    border:none;
+    background:#1a1a25;
+    color:#fff;
+    font-size:15px;
+}
+
+#channelList{
+    max-height:500px;
+    overflow-y:auto;
+}
+
+.channel{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px 15px;
+    background:linear-gradient(90deg,#1b1b22,#21212b);
+    margin-bottom:8px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:all 0.2s;
+    font-size:16px;
+}
+.channel:hover{
+    background:linear-gradient(90deg,#272733,#2e2e44);
+}
+.channel .left{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+.channel .star{
+    cursor:pointer;
+    user-select:none;
+    font-size:18px;
+    transition:0.2s;
+}
+.channel .star:hover{
+    transform:scale(1.3);
+}
+.active{
+    border:2px solid #6a00ff;
+    background:linear-gradient(90deg,#3c00ff,#6a00ff);
+}
+
+@media(max-width:900px){
+    #player{height:200px;}
+}
+#playerLogo {
+    position: absolute;
+    top: 10px;        /* مكان الشعار */
+    right: 10px;
+    width: 40px;      /* حجم الشعار */
+    opacity: 0.5;     /* درجة الشفافية (0.1 = شفاف جدًا ، 1 = بدون شفافية) */
+    pointer-events: none;  /* حتى لا يؤثر على التحكم بالفيديو */
+    z-index: 9999;
+}
+
+</style>
+</head>
+<body>
+
+<header>
+    <h1>📺 بث مباشر - قنوات BeIN Sports</h1>
+</header>
+<div id="topBar">
+    <video id="player" class="video-js vjs-big-play-centered" controls preload="auto" data-setup='{}'>
+        <source src="" type="application/x-mpegURL"></source>
+    </video>
+<img id="playerLogo" src="https://c.top4top.io/p_36309zewb0.jpg">
+
+    <button id="favoritesBtn">💛 المفضلة</button>
+ <style="padding:10px;">
+    <input id="searchInput" type="text" placeholder="🔍 بحث عن قناة..."/>
+</div>
+    <div id="channelList"></div>
+<script>
+const channels=[
+    {name:"AR:BEIN BOOMERANG", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/53342.m3u8"},
+    {name:"AR:BEIN FATAFEAT", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/53343.m3u8"},
+    {name:"AR:BEIN FOX MOVIE", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/53344.m3u8"},
+    {name:"AR:BEIN FOX LIFE", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/53345.m3u8"},
+    {name:"AR:BEIN FOX REWAYAT", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/53346.m3u8"},
+    {name:"AR:BEIN TRAVEL", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/53347.m3u8"},
+    {name:"AR:BEIN SPORTS AFC", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/53351.m3u8"},
+    {name:"AR:BEIN SPORTS AFC 1", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/53349.m3u8"},
+ {name:"AR:BEIN SPORTS AFC 2", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/53348.m3u8"},
+ {name:"AR:BEIN SPORTS AFC 3", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/53350.m3u8"},
+ {name:"AR:BEIN SPORTS XTRA 2", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/53352.m3u8"},
+{name:"AR:BEIN SPORTS 1", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/25106.m3u8"},
+ {name:"AR:BEIN SPORTS 2", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/25107.m3u8"},
+ {name:"AR:BEIN SPORTS 3", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/25108.m3u8"},
+ {name:"AR:BEIN SPORTS 4", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/25110.m3u8"},
+{name:"AR:BEIN SPORTS 5", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/25109.m3u8"},
+ {name:"AR:BEIN SPORTS 6", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/25111.m3u8"},
+ {name:"AR:BEIN SPORTS 7", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/25112.m3u8"},
+{name:"AR:BEIN SPORTS PREMIUM 1", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/25118.m3u8"},
+ {name:"AR:BEIN SPORTS PREMIUM 2", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/25119.m3u8"},
+ {name:"AR:BEIN SPORTS PREMIUM 3", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/25120.m3u8"},
+ {name:"AR:BEIN SPORTS MAX 1", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/49563.m3u8"},
+ {name:"AR:BEIN SPORTS MAX 2", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/49564.m3u8"},
+ {name:"AR:BEIN SPORTS MAX 3", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/49565.m3u8"},
+ {name:"AR:BEIN SPORTS MAX 4", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/49566.m3u8"},
+{name:"AR:BEIN SPORTS MAX 6", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/49568.m3u8"},
+ {name:"AR:BEIN SPORTS ENG 1", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/25113.m3u8"},
+ {name:"AR:BEIN SPORTS ENG 2", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/25114.m3u8"},
+ {name:"AR:BEIN SPORTS ENG 3", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/25115.m3u8"},
+{name:"AR:BEIN SPORTS NBA", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/25116.m3u8"},
+ {name:"AR:BEIN SPORTS NEWS", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/25117.m3u8"},
+ {name:"AR:BEIN SPORTS XTRA 1", url:"http://norkadymm.top:8080/live/61736786911651/d93317d02712/25121.m3u8"}
+ 
+];
+
+const player=videojs('player');
+const searchInput=document.getElementById('searchInput');
+const channelList=document.getElementById('channelList');
+const favoritesBtn=document.getElementById('favoritesBtn');
+let favorites=JSON.parse(localStorage.getItem('favorites')||'[]');
+let selectedChannel=null;
+let showingFavoritesOnly=false;
+
+function toggleFavorite(name){
+    if(favorites.includes(name)) favorites=favorites.filter(f=>f!==name);
+    else favorites.push(name);
+    localStorage.setItem('favorites',JSON.stringify(favorites));
+}
+
+function buildChannelElement(ch){
+    const div=document.createElement('div');
+    div.className='channel';
+
+    const left=document.createElement('div');
+    left.className='left';
+    const label=document.createElement('span');
+    label.textContent=ch.name;
+    left.appendChild(label);
+
+    const star=document.createElement('span');
+    star.className='star';
+    star.textContent=favorites.includes(ch.name)?'💛':'🤍';
+    star.title=favorites.includes(ch.name)?'إزالة من المفضلة':'أضف إلى المفضلة';
+    star.addEventListener('click',(e)=>{
+        e.stopPropagation();
+        toggleFavorite(ch.name);
+        renderChannels();
+    });
+
+    div.appendChild(left);
+    div.appendChild(star);
+
+    div.addEventListener('click',()=>{
+        selectedChannel=ch.name;
+        document.querySelectorAll('.channel').forEach(c=>c.classList.remove('active'));
+        div.classList.add('active');
+        try{
+            const type=ch.url.endsWith('.m3u8')?'application/x-mpegURL':'video/mp4';
+            player.src({src:ch.url,type});
+            player.play(); // تشغيل تلقائي عند الضغط على القناة
+        }catch(e){}
+    });
+
+    return div;
+}
+
+function renderChannels(){
+    const term=searchInput.value.trim().toLowerCase();
+    channelList.innerHTML='';
+    let list=showingFavoritesOnly? channels.filter(c=>favorites.includes(c.name)) : channels;
+
+    list.forEach(ch=>{
+        if(term && !ch.name.toLowerCase().includes(term)) return;
+        const el=buildChannelElement(ch);
+        if(selectedChannel===ch.name) el.classList.add('active');
+        channelList.appendChild(el);
+    });
+}
+
+searchInput.addEventListener('input',renderChannels);
+favoritesBtn.addEventListener('click',()=>{
+    showingFavoritesOnly=!showingFavoritesOnly;
+    favoritesBtn.textContent=showingFavoritesOnly?'💛 عرض كل القنوات':'💛مفضلة';
+    renderChannels();
+});
+
+window.addEventListener('beforeunload',()=>{localStorage.setItem('favorites',JSON.stringify(favorites));});
+
+renderChannels();
+</script>
+
+</body>
+</html>
